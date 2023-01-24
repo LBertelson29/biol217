@@ -1,0 +1,52 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=10G
+#SBATCH --time=1:00:00
+#SBATCH --job-name=fastqc
+#SBATCH --output=/work_beegfs/sunam226/fastqc.out
+#SBATCH --error=/work_beegfs/sunam226/fastqc.err
+#SBATCH --partition=all
+#SBATCH --reservation=biol217
+
+#only change name in line 6-8
+
+module load miniconda3/4.7.12.1
+
+conda activate anvio
+
+#fastqc
+
+#load your anvio environment (path needs to be adjusted)
+source activate /home/sunamXXX/miniconda3/miniconda4.9.2/usr/etc/profile.d/conda.sh/envs/anvio-7.1
+
+
+
+#set environmental variables here (anything you want to run multiple times)
+outdir=/work_beegfs/sunamXXX/out_dir
+meta=/work_beegfs/sunamXXX/.txt
+runname=Run2023-01-20
+trunclength=240
+
+#commands are printed into the log
+set -xu
+
+#navigate to working directory
+cd $HOME
+
+# write your command here, if you want to use some environemtal variables, these can be accessed via $nameofvariable
+
+# HERE YOU WRITE YOUR COMMANDS
+#
+#
+rm -rf /home/sunam226/.conda/envs/viromics
+
+# Finish each script with this (prints Done and a Unicorn into your logile), then you know everything has run through
+echo "Done removing"
+
+printf '\U1F984\n'
+
+#this prints the required resources into your logfile
+jobinfo
+
+
