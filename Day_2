@@ -85,3 +85,16 @@ und dann $for i in *.gz; do fastqc $i -o output_folder/; done
 
 $ squeue -u sunam228
 
+$ fastp --h --> zeigt, was man alles schneiden kann von den strings 
+
+
+sbatch ist ein Protokoll, was ich an sich ganz dann abschicken kann 
+
+ls -l zeigt an, was in meinem Ordner ist 
+
+pwd zeigt meinen Pfad an 
+
+sbatch assembly_script.sh  -> so lasse ich mein batch-Skript ausführen. Muss in den Ordner, wo mein Skript ist und das dann aufsürhren 
+
+Batch skript mit .sh abspeichern 
+
