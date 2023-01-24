@@ -49,4 +49,39 @@ printf '\U1F984\n'
 #this prints the required resources into your logfile
 jobinfo
 
+urs@Kurs015:~/Desktop/biol217$ cd
+kurs@Kurs015:~$ ssh -X sunam228@caucluster.rz.uni-kiel.de
+sunam228@caucluster.rz.uni-kiel.de's password: 
+Permission denied, please try again.
+sunam228@caucluster.rz.uni-kiel.de's password: 
+Last failed login: Tue Jan 24 13:46:08 CET 2023 from ukifam-c168054.ifam.uni-kiel.de on ssh:notty
+There was 1 failed login attempt since the last successful login.
+Last login: Mon Jan 23 11:34:02 2023 from ukifam-c168054.ifam.uni-kiel.de
+
+
+[sunam228@caucluster2 ~]$ cd /home/sunam226 
+[sunam228@caucluster2 sunam226]$ ls
+anviscript  Databases  Day1  Day10  Day2  Day3  Day4  Day5  Day6  Day7  Day8  Day9  roadmap_bio217.png  test_day1
+[sunam228@caucluster2 sunam226]$ cp anviscript /home/sunam228
+[sunam228@caucluster2 sunam226]$ cd /home
+[sunam228@caucluster2 home]$ ls
+
+so komme ich in andere sunam um sachen zu downloaden 
+
+squeue -u sunam 228 
+
+da kann man sehen, was gerade passiert 
+
+$ conda activate /home/sunam226/.conda/envs/anvio
+falls was schief läuft, das hier nehmen
+
+so conda activate environment
+conda activate /home/sunam226/.conda/envs/anvio
+
+module load fastqc 
+
+und dann $for i in *.gz; do fastqc $i -o output_folder/; done
+
+
+$ squeue -u sunam228
 
