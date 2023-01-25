@@ -19,10 +19,11 @@ How many contigs are assembled?
 What is the total length of the contigs?
 
 My N50 value is:2963
-The N50 defines assembly quality in terms of contiguity.
+N50 is the contig length such that using longer or equal length contigs produces half (50%) of the bases of the assembly.Usually there is no value that produces ecactly 50%, so the technical definition is the maximum length x such that using contigs of length at least x accounts for at least 50% of the total assembly length.
+(The N50 defines assembly quality in terms of contiguity)
 
 Contigs assembled:57414
-The total length is: 292476
+The total length is: 145675865
 
 
 # Some information for me 
