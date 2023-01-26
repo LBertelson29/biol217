@@ -137,7 +137,7 @@ cd /work_beegfs/sunam228/Day3/3_coassembly
 #load your anvio environment (path needs to be adjusted)
 
 ```
-source activate /home/sunam226/miniconda3/miniconda4.9.2/usr/etc/profile.d/conda.sh/envs/anvio-7.1
+conda activate /home/sunam225/miniconda3/miniconda4.9.2/usr/etc/profile.d/conda.sh/envs/anvio-7.1
 ```
 
 
@@ -146,7 +146,6 @@ source activate /home/sunam226/miniconda3/miniconda4.9.2/usr/etc/profile.d/conda
 
 ```
 cd /work_beegfs/sunam228/Day3/4_mapping
-
 bowtie2-build /work_beegfs/sunam228/Day3/3_coassembly/contigs.anvio.fa /work_beegfs/sunam228/Day3/4_mapping/contigs.anvio.fa.index
 ```
 
@@ -169,7 +168,7 @@ bowtie2-build /work_beegfs/sunam228/Day3/3_coassembly/contigs.anvio.fa /work_bee
 
 load your anvio environment (path needs to be adjusted)
 ```
-source activate /home/sunam226/miniconda3/miniconda4.9.2/usr/etc/profile.d/conda.sh/envs/anvio-7.1
+conda activate /home/sunam225/miniconda3/miniconda4.9.2/usr/etc/profile.d/conda.sh/envs/anvio-7.1
 
 cd ./2_fastp/
 for i in `ls *mapped_R1.fastq.gz`;
@@ -196,7 +195,7 @@ done
 #load your anvio environment (path needs to be adjusted)
 
 ```
-source activate /home/sunam226/miniconda3/miniconda4.9.2/usr/etc/profile.d/conda.sh/envs/anvio-7.1
+conda activate /home/sunam225/miniconda3/miniconda4.9.2/usr/etc/profile.d/conda.sh/envs/anvio-7.1
 
 
 module load samtools
