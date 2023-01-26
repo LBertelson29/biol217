@@ -115,7 +115,7 @@ ggplot()
 data.date
 
 
-# THis code is about linux introduction 
+# This code is about linux introduction 
 # this will make a folder
 
 open a document in Visual Sutudio Code with Markdowm All in One 
@@ -128,7 +128,7 @@ alles, was dann da geschrieben wird, wird in Github angezeigt
 ```
 mdkdir test
 ```
---> Dannw wird das in Code geschrieben
+--> Dann wird das in Code geschrieben
 
 Markdowm cheat sheet 
 
