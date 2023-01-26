@@ -309,10 +309,9 @@ anvi-interactive -p ./PROFILE.db -c ./contigs.db -C ../../consolidated_bins
 (Code not tested)
 
 
-Then Click on draw (bottom left corner)
 
 
-## `Questions`
+## `Questions` 
 
 Which binning strategy gives you the best quality for the bins?
 
