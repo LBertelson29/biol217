@@ -162,13 +162,17 @@ mkdir GUNC
 ```
 
 
-`## Questions`
+## `Questions`
 
 Do you get bins that are chimeric?
-- j
+- The Metabat-bins are non-chimeric 
+- The Concoct-bins from kingdom to class are chimeric
 
 In your own words (2 sentences max), explain what is a chimeric bin:
-- ds
+  - chimeric contigs: Wrongly assembled contigs from genomic fragments.
+  - chimeric bins: contigous fragments from different sources are sorted in the same genomic bin 
+
+
 
 ## Manual bin refinement
 
@@ -182,25 +186,23 @@ conda activate /home/sunam225/miniconda3/miniconda4.9.2/usr/etc/profile.d/conda.
 
 Use anvi refine to manually work on your bins. “In the interactive interface, any bins that you create will overwrite the bin that you originally opened. If you don’t provide any names, the new bins’ titles will be prefixed with the name of the original bin, so that bin will continue to live on in spirit. Essentially, it is like running anvi-interactive, but disposing of the original bin when you’re done.”
 
-```
-anvi-refine -c /PATH/TO/contigs.sb -C PATH/TO/consolidated_bins -p /PATH/TO/merged_profiles/PROFILE.db --bin-id Bin_METABAT__25
-```
+
 `activate anvi'o interavtive`
 ```
 srun --reservation=biol217 --pty --mem=10G --nodes=1 --tasks-per-node=1 --cpus-per-task=1 --nodelist=node002 /bin/bash
 ```
-* node
+* node010
 
 ```
 conda activate /home/sunam225/miniconda3/miniconda4.9.2/usr/etc/profile.d/conda.sh/envs/anvio-7.1
 
-anvi-refine -c /PATH/TO/contigs.sb -C consolidated_bins -p /PATH/TO/merged_profiles/PROFILE.db --bin-id Bin_METABAT__25
+anvi-refine -c ../contigs.sb -C consolidated_bins -p ./merged_profiles/PROFILE.db --bin-id Bin_METABAT__25
 ```
 `Open new terminal`
 
 ```
-ssh -L 8060:localhost:8080 sunam228@caucluster.rz.uni-kiel.de
-ssh -L 8080:localhost:8080 node###
+ssh -L 8060:localhost:8080 sunam228@caucluster-old.rz.uni-kiel.de
+ssh -L 8080:localhost:8080 node010
 ```
 
 `open google chrome and paste `
@@ -219,15 +221,27 @@ The interface allows you to categorize contigs into separate bins (selection too
 
 For refinement use clustering based on only differential coverage, and then only based on sequence composition in search for outliers
 
-Rerun GUNC again on the refined bins and compare them to the previous GUNC results.
 
-`## Questions`
+## `Questions`
 
-Does the quality of your improve?
-- jj
+Does the quality of your Archaea improve?
+- The completeness of the bins decreases (from 97.4 to 93.4) 
+- The strain heterogeneity stays the same
   
-hint: look at completeness, strain heterogeneity and contamination output from anvio and submir info of before and after
-hint: look at output from GUNC 
-
+  
+hint: look at completeness, strain heterogeneity 
 
 ## Table + output Figure
+
+![image](Pictures/Refining_Bin_METABAT__25_from__consolidated_bins_.svg)
+
+### Notes 
+
+`clade_separation_score` close to 1 = chimeric 
+
+reference-representive -score = how mixed are the genes
+
+metabat= most bins are 0 or near 0 (non-chimeric)
+
+Concoct = only seperated at order-level
+metabat= seperated at species-level
