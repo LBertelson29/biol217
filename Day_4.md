@@ -313,17 +313,18 @@ http://127.0.0.1:8060 or http://127.0.0.1:8080
 Anvi-interactive gives you the possibility to manually inspect and work on bins.
 - you can set all parameters that you want 
 
-![image](Pictures/consolidated%20bins.png)
+![image](Pictures/Collection__consolidated_bins__for_merged_profiles.svg)
 
 
 
 
 ## `Questions` 
 
-Which binning strategy gives you the best quality for the bins?
 
-How many bins do you get that are of High Quality? 
 
-How many bins do you get that are of High Quality?
+Which binning strategy gives you the best quality for the Archaea bins?
+
+How many Archaea bins do you get that are of High Quality? 
+
 
 
