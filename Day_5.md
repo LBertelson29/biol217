@@ -246,3 +246,131 @@ metabat= most bins are 0 or near 0 (non-chimeric)
 Concoct = only seperated at order-level
 metabat= seperated at species-level
 
+# Taxonomic assignment
+You will now add taxonomic annotations to your MAG.
+```
+anvi-run-scg-taxonomy -c /PATH/TO/contigs.db -T 20 -P 2
+```
+### Batch-script anvi run scg taxonomy
+```
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=10G
+#SBATCH --time=1:00:00
+#SBATCH --job-name=anvi_run_tax
+#SBATCH --output=anvi_run_tax.out
+#SBATCH --error=anvi_run_tax.out
+#SBATCH --partition=all
+#SBATCH --reservation=biol217
+
+#load your anvio environment (path needs to be adjusted)
+
+module load miniconda3/4.7.12.1
+source activate /home/sunam225/miniconda3/miniconda4.9.2/usr/etc/profile.d/conda.sh/envs/anvio-7.1
+
+#navigate to working directory
+cd /work_beegfs/sunam228/Day5/5_anvio_profiles
+
+anvi-run-scg-taxonomy -c ../contigs.db -T 20 -P 2
+```
+
+Now you can run anvi-estimate-scg-taxonomy, ‘This program makes quick taxonomy estimates for genomes, metagenomes, or bins stored in your contigs-db using single-copy core genes’ (https://anvio.org/help/main/programs/anvi-estimate-scg-taxonomy/). Use the program in metagenome-mode, as your contigs contain multiple genomes.
+```
+anvi-estimate-scg-taxonomy -c /PATH/TO/contigs.db --metagenome-mode
+```
+
+### Batch-script anvi estimate scg taxonomy
+
+```
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=10G
+#SBATCH --time=1:00:00
+#SBATCH --job-name=anvi_est_tax
+#SBATCH --output=anvi_est_tax.out
+#SBATCH --error=anvi_est_tax.out
+#SBATCH --partition=all
+#SBATCH --reservation=biol217
+
+#load your anvio environment (path needs to be adjusted)
+
+module load miniconda3/4.7.12.1
+source activate /home/sunam225/miniconda3/miniconda4.9.2/usr/etc/profile.d/conda.sh/envs/anvio-7.1
+
+#navigate to working directory
+cd /work_beegfs/sunam228/Day5/5_anvio_profiles
+
+anvi-estimate-scg-taxonomy -c ../contigs.db --metagenome-mode
+```
+ONE final summary to get comprehensive info about your consolidated bins:
+```
+anvi-summarize -p /PATH/TO/merged_profiles/PROFILE.db -c /PATH/TO/contigs.db -o /PATH/TO/SUMMARY_consolidated_bins -C consolidated_bins
+```
+### Batch-script anvi summarize 2
+
+```
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=10G
+#SBATCH --time=1:00:00
+#SBATCH --job-name=anvi_summarize
+#SBATCH --output=anvi_summarize.out
+#SBATCH --error=anvi_summarize.out
+#SBATCH --partition=all
+#SBATCH --reservation=biol217
+
+#load your anvio environment (path needs to be adjusted)
+
+module load miniconda3/4.7.12.1
+source activate /home/sunam225/miniconda3/miniconda4.9.2/usr/etc/profile.d/conda.sh/envs/anvio-7.1
+
+#navigate to working directory
+cd /work_beegfs/sunam228/Day5/5_anvio_profiles
+
+anvi-summarize -c ../contigs.db -p ./merged_profiles/PROFILE.db -C consolidated_bins -o ./summary_2 --just-do-it
+```
+
+## `Questions`
+
+Did you get a species assignment to the Archaea bins previously identified?
+Concuct: 
+total_length = 1948187
+- num_contigs = 1054
+- N50 = 1883
+- GC_content = 43.0927763589817
+- percent_completion = 73.6842105263158	
+- percent_redundancy = 1.31578947368421
+- t_domain = Archaea	
+- t_phylum = 	Halobacteriota
+- t_class = Methanosarcinia
+- t_order = Methanosarcinales
+- t_family = Methanosarcinaceae
+- t_genus = Methanosarcina
+- t_species =  Methanosarcina flavescens
+  
+											
+
+Metabat:
+- total_length = 1859269
+- num_contigs = 250
+- N50 = 8819
+- GC_content = 59.5651181815842
+- percent_completion = 97.3684210526316
+- percent_redundancy = 5.26315789473684
+- t_domain = Archaea	
+- t_phylum = 	Halobacteriota
+- t_class = Methanomicrobia
+- t_order = Methanomicrobiales
+- t_family = Methanoculleaceae
+- t_genus = Methanoculleus
+- t_species = Methanoculleus sp012797575
+  
+
+Does the HIGH-QUALITY assignment of the bin need revision?
+- Yes. 
+
+hint: MIMAG quality tiers
+
