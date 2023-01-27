@@ -263,6 +263,9 @@ Number of Archaea bins you got after consolidating the bins?
 - 2
 
 # MAGs Quality Estimation
+
+## Visualizing and evaluating the results 
+
 Estimate your genomes completeness and contamination levels.
 You can assess the quality of your bins by using
 ```
@@ -273,8 +276,12 @@ anvi-estimate-genome-completeness -c /PATH/TO/contigs.db -p merged_profiles/PROF
 ```
 anvi-estimate-genome-completeness -c ./contigs.db -p ./5_anvio_profiles/merged_profiles/PROFILE.db -C consolidated_bins
 ```
+```
+anvi-estimate-genome-completeness -c ./contigs.db -p ./5_anvio_profiles/merged_profiles/PROFILE.db -C consolidated_bins > genome_completeness_das
+tool-txt
+```
+--> for saving the list 
 
-### Visualizing and evaluating the results 
 
 To check what collections you generated you can use:
 
@@ -285,6 +292,15 @@ To check what collections you generated you can use:
 ```
 anvi-estimate-genome-completeness -p ./5_anvio_profiles/merged_profiles/PROFILE.db -c ./contigs.db --list-collections
 ```
+
+
+COLLECTIONS FOUND
+
+* METABAT (48 bins, representing 8939 items).
+* CONCOCT (156 bins, representing 57626 items).
+* consolidated_bins (41 bins, representing 13825 items).
+
+
 
  ### `Open anvi'o interactive`
 

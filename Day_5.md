@@ -80,4 +80,154 @@ Which binning strategy gives you the best quality for the Archaea bins?
 How many Archaea bins do you get that are of High Quality? 
 
 
+# Bin refinement 
 
+First, active conda 
+```
+conda activate /home/sunam225/miniconda3/miniconda4.9.2/usr/etc/profile.d/conda.sh/envs/anvio-7.1
+```
+
+Then use anvi-summarize as displayed below.
+```
+anvi-summarize -c /PATH/TO/contigs.db -p /PATH/TO/merged_profiles/profile.db -C consolidated_bins -o SUMMARY --just-do-it
+```
+
+### Batch-script for anvio_summarize
+```
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=10G
+#SBATCH --time=1:00:00
+#SBATCH --job-name=anvi_summarize
+#SBATCH --output=anvi_summarize.out
+#SBATCH --error=anvi_summarize.out
+#SBATCH --partition=all
+#SBATCH --reservation=biol217
+
+#load your anvio environment (path needs to be adjusted)
+
+module load miniconda3/4.7.12.1
+source activate /home/sunam225/miniconda3/miniconda4.9.2/usr/etc/profile.d/conda.sh/envs/anvio-7.1
+
+#navigate to working directory
+cd /work_beegfs/sunam228/Day5/5_anvio_profiles
+
+anvi-summarize -c ../contigs.db -p ./merged_profiles/PROFILE.db -C consolidated_bins -o ./summary --just-do-it
+```
+
+
+As each bin is stored in its own folder, use
+```
+cd /PATH/TO/SUMMARY/bin_by_bin
+
+mkdir ../../ARCHAEA_BIN_REFINEMENT
+
+cp /PATH/TO/BIN_FOLDER_INFO_FROM_ERR_FILE/*.fa /PATH/TO/ARCHAEA_BIN_REFINEMENT/o-it
+```
+`For my path`
+```
+cd ./summary/bin_by_bin
+
+mkdir ../../ARCHAEA_BIN_REFINEMENT
+
+cp ./summary/bin_by_bin/Bin_Bin_1_sub/*.fa ./ARCHAEA_BIN_REFINEMENT/
+
+cp ./summary/bin_by_bin/Bin_METABAT__25/*.fa ./ARCHAEA_BIN_REFINEMENT/
+
+```
+
+
+
+## Use GUNC to check run chimera detection.
+
+Genome UNClutter (GUNC) is “a tool for detection of chimerism and contamination in prokaryotic genomes resulting from mis-binning of genomic contigs from unrelated lineages.”
+
+Chimeric genomes are genomes wrongly assembled out of two or more genomes coming from separate organisms. For more information on GUNC: https://genomebiology.biomedcentral.com/articles/10.1186/s13059-021-02393-0
+
+to use GUNC , activate the following environment:
+```
+conda activate /home/sunam226/.conda/envs/gunc
+```
+Use the following loop to process all your files in one run:
+```
+cd /PATH/TO/ARCHAEA_BIN_REFINEMENT
+
+mkdir GUNC
+```
+
+### Batch-script for GUNG
+```
+
+```
+
+
+`## Questions`
+
+Do you get bins that are chimeric?
+- j
+
+In your own words (2 sentences max), explain what is a chimeric bin:
+- ds
+
+## Manual bin refinement
+
+As large metagenome assemblies can result in hundreds of bins, pre-select the better ones for manual refinement, e.g. > 70% completeness.
+
+Before you start, make a copy/backup of your unrefined bins the ARCHAEA_BIN_REFINEMENT.
+
+```
+conda activate /home/sunam225/miniconda3/miniconda4.9.2/usr/etc/profile.d/conda.sh/envs/anvio-7.1
+```
+
+Use anvi refine to manually work on your bins. “In the interactive interface, any bins that you create will overwrite the bin that you originally opened. If you don’t provide any names, the new bins’ titles will be prefixed with the name of the original bin, so that bin will continue to live on in spirit. Essentially, it is like running anvi-interactive, but disposing of the original bin when you’re done.”
+
+```
+anvi-refine -c /PATH/TO/contigs.sb -C PATH/TO/consolidated_bins -p /PATH/TO/merged_profiles/PROFILE.db --bin-id Bin_METABAT__25
+```
+`activate anvi'o interavtive`
+```
+srun --reservation=biol217 --pty --mem=10G --nodes=1 --tasks-per-node=1 --cpus-per-task=1 --nodelist=node002 /bin/bash
+```
+* node
+
+```
+conda activate /home/sunam225/miniconda3/miniconda4.9.2/usr/etc/profile.d/conda.sh/envs/anvio-7.1
+
+anvi-refine -c /PATH/TO/contigs.sb -C consolidated_bins -p /PATH/TO/merged_profiles/PROFILE.db --bin-id Bin_METABAT__25
+```
+`Open new terminal`
+
+```
+ssh -L 8060:localhost:8080 sunam228@caucluster.rz.uni-kiel.de
+ssh -L 8080:localhost:8080 node###
+```
+
+`open google chrome and paste `
+
+```
+http://127.0.0.1:8060 or http://127.0.0.1:8080
+```
+### Sort your bins by GC content, by coverage or both
+The interface allows you to categorize contigs into separate bins (selection tool)
+
+- Unhighlighted contigs are removed when the data is saved
+
+- Evaluate taxonomy and duplicate single copy core genes
+
+- Remove contigs
+
+For refinement use clustering based on only differential coverage, and then only based on sequence composition in search for outliers
+
+Rerun GUNC again on the refined bins and compare them to the previous GUNC results.
+
+`## Questions`
+
+Does the quality of your improve?
+- jj
+  
+hint: look at completeness, strain heterogeneity and contamination output from anvio and submir info of before and after
+hint: look at output from GUNC 
+
+
+## Table + output Figure
