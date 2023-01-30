@@ -220,7 +220,8 @@ anvi-script-gen-genomes-file --input-dir ? -o external-genomes-final.txt
 ```
 anvi-script-gen-genomes-file --input-dir ../02_contigs-dbs/ -o external-genomes-final.txt
 ```
-# 3.4 Creating the pangenome database (Directory: 03_pangenome)
+# 3.4 Creating the pangenome database 
+## (Directory: 03_pangenome)
 
 In anvi'o we will need to generate two artifacts, similar to when working with assemblies. The first is the genomes-storage.db, which corresponds to an individual contigs.db, but merges all individual genomes you are working with into one database. The files themselves will be a bit leaner, than all files together, making it easier to share and publish those.
 
@@ -293,5 +294,164 @@ anvi-compute-genome-similarity --external-genomes ? --program ? --output-dir ? -
 ```
 `My SBATCH-script`
 ```
+#!/bin/bash
+
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=10
+#SBATCH --mem=600M
+#SBATCH --time=00:02:00
+#SBATCH --job-name=ANI
+#SBATCH -D ./
+#SBATCH --output=./ANI.out
+#SBATCH --error=./ANI.out
+#SBATCH --partition=all
+
+# for pangenome
+source activate /home/sunam225/miniconda3/miniconda4.9.2/usr/etc/profile.d/conda.sh/envs/anvio-7.1
+
+# set working directory by navigating there
+cd /work_beegfs/sunam228/Day6/03_pangenome
+
+anvi-compute-genome-similarity --external-genomes external-genomes-final.txt --program pyANI --output-dir ANI  --num-threads 10 --pan-db ./Methano_pangenome/Methano_pangenome-PAN.db
+```
+# 5. Visualizing the pangenome 
+## (Directory: 03_pangenome)
+
+`Tip`: When we are working in the interface, we may want to save the changes we have made to the views. This can easily be done via the save buttons. Make sure to give your state a significant name, i.e. the step you are at.
+
+`First get direct access to a HPC compute node`:
 
 ```
+srun --pty --mem=10G --nodes=1 --tasks-per-node=1 --cpus-per-task=1 --reservation=biol217 --partition=all /bin/bash
+
+#activate the conda environment
+conda activate /home/sunam225/miniconda3/miniconda4.9.2/usr/etc/profile.d/conda.sh/envs/anvio-7.1
+```
+
+`Check out the pangenome command`:
+```
+anvi-display-pan -h
+```
+
+## `Questions`
+
+### Which INPUT FILES do we need?
+
+Input files from the pangenome analysis.
+
+  -p PAN_DB, --pan-db PAN_DB
+                        Anvi'o pan database (default: None)
+  -g GENOMES_STORAGE, --genomes-storage GENOMES_STORAGE
+                        Anvi'o genomes storage file (default: None)
+
+
+### Write the command and use the additional flag -P. 
+```
+## start anvi'o interactive display
+anvi-display-pan -p Methano_pangenome-PAN.db -g ../Methano_GENOMES.db -P 8083
+```
+
+### What is the -P flag for?
+
+-P INT, --port-number INT
+                        Port number to use for anvi'o services. If nothing is
+                        declared, anvi'o will try to find a suitable port
+                        number, starting from the default port number, 8080.
+                        (default: None)
+
+`Open new terminal` in MobaXterm and start the tunnel: 
+```
+ssh -L 8060:localhost:8083 sunam228@caucluster-old.rz.uni-kiel.de 
+```
+```
+ssh -L 8083:localhost:8083 node010
+```
+`Open a chrome browser and enter the following IP`: http://127.0.0.1:8060
+
+# 6. Interpreting and ordering the pangenome (interactive interface)
+## TASKS: Genome similarity
+
+1. Remove combined homogeneity, functional homogeneity, geometric homogeneity, max num parsimonay, number of genes in gene cluster and number of genomes gene cluster has hits from the active view. `Tip`: Play with Height
+
+2. Create a "Bin-highlight" including alls SCGs and name it accordingly. 
+
+3. Cluster the genomes based on Frequency
+
+## `Question`: 
+### Based on the frequency clustering of genes, do you think all genomes are related? Why?
+
+Yes, based on the frequencx clustering of the genes, all genomes are related. All genomes share the position of an SCG and it occurs only one time in the genomes. 
+
+
+4. Highlight your reference genome in one color, its closest relative in a similar one, and distict genomes in a third colour.
+
+## `Question`: 
+### How does the reference genome compare to its closest bin? 
+`Tip`: Consider the genome depiction and layers above
+
+The reference genom and the genom from Bin09 are pretty simular, with mostly identical gene clustering. 
+
+
+1. Go to Layers and remove Num gene clusters, Singeltons, Genes per kbp and Total length from view. Add ANI_percentage_identity to the view and play with the threshold.
+
+## `Questions`: 
+### What ranges are used determine a prokaryotic species? 
+
+### How high can you go until you see changes in ANI?
+
+### What does the ANI clustering tell you about genome relatedness?
+
+
+## TASKS: Functional Profiling
+
+Using the Search Function, highlight all genes in the KEGG Module for Methanogenesis
+
+
+## Tasks: Create a new bin called "Methanogenesis" and store your search results in this bin.
+
+## TASKS: Functional Profiling
+
+1. Using the Search Function, highlight all genes in the KEGG Module for Methanogenesis
+2. Create a new bin called "Methanogenesis" and store your search results in this bin.
+
+## `Question`: 
+### How are Methanogenesis genes distributed across the genome?
+
+1. Google COG Categories and select one you are interesed in. Create a new bin, find your Category in the Pangenome and add it to this selection.
+
+
+ FINAL VIEW 
+
+![Image](Pictures/Methano_pangenome(1).svg)
+
+
+
+## TASKS: Functional/geometric homogeneity and their uses
+
+1. Using search parameters, find a gene which occurs:
+        in all genomes
+        a maximum of 1 times (Single copy gene)
+        has a high variability in its functional homogeneity (max. 0.80)
+
+This gene will be highly conserved, but has diversified in its AA make-up.
+
+2. Highlight the found genes on the interface. Inspect one of the gene-clusters more closely (Inspect gene-cluster).
+
+## `Question`: 
+### What observations can you make regarding the geometric homogeneity between all genomes and the functional homogeneity?
+
+ ![Image](Pictures/Screenshot%202023-01-30%20at%2015-20-40%20GC_00000248%20detailed.png)
+
+
+# BONUS: BlastKoala
+
+Outside of anvi'o there are a range of tools available to investigate your organisms metabolism. One of these is BlastKOALA, which generates a metabolic profile of your genome based on the KEGG database.
+
+## Task: Check out the BlastKOALA Results for this Methanogen.
+
+Reconstruct its pathways and check out what it can do.
+
+## `Question`: Can the organism do methanogenesis? Does it have genes similar to a bacterial secretion system?
+
+
+Yes the organism can do methanogenesis. 
