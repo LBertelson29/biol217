@@ -124,9 +124,10 @@ Add a screenshot of your output to your documentation.
 ## `Question`
 ### How do the MAGs compare in size and number of contigs to the full genome?
 
-The number and size of MAGs differ in compare to the full genome trough all bins. 
-The number of contigs in Methano_Mflavescens is 1, as for the bins the number differ from 164 to 334. 
-The total length for Methano_Mflavescens is 3,283,688, in the bins the total length is between 1,336,430 and 2,637,263.
+-The size of MAGs differ in compare to the full genome trough all bins. The size of the MAGs are smaller than the full Methano_mflavenscens genome.
+-The number of contigs is much higher in the MAG bins (164 to 334), since the full genome only cosists of 1 contig.
+-The longest contigs vary between 14 kb and 65 kb, compared to 3.28 mb of the full genome of Methano_mflavenscens.
+-Single copy core genes (HMM) differ from 43 to 80. the complete genome contains 72. 
 
 
 ### Based on the contig numbers, sizes and number of marker genes (HMM hits), which two MAGs are the best:
@@ -197,6 +198,7 @@ We want to specifically look at redundancy and completeness.
 
 ## `Question`
 How do the bins compare to isolate genomes? Would you remove one, based on the output of the completeness estimation?
+- Some bins deviate  greatly to the isolate genome. I would remove Methano_Bin5 and Methano_Bin10 based on the completeness estimation. 
 
 # 3.3 Remove unwanted genomes (Directory: 02_contigs-dbs)
 
@@ -379,8 +381,8 @@ ssh -L 8083:localhost:8083 node010
 
 ## `Question`: 
 ### Based on the frequency clustering of genes, do you think all genomes are related? Why?
-
-Yes, based on the frequencx clustering of the genes, all genomes are related. All genomes share the position of an SCG and it occurs only one time in the genomes. 
+Based on the SCGs, which are clustered in the same region and only occur once in every genome, all genomes should classify as Archea.
+Bin9 seems to be closer related to Mflavescens. The two share more gene clusters than the other bins, which are more similar to each other thatn to Bin09 and M.Flavescens. 
 
 
 4. Highlight your reference genome in one color, its closest relative in a similar one, and distict genomes in a third colour.
@@ -389,18 +391,27 @@ Yes, based on the frequencx clustering of the genes, all genomes are related. Al
 ### How does the reference genome compare to its closest bin? 
 `Tip`: Consider the genome depiction and layers above
 
-The reference genom and the genom from Bin09 are pretty simular, with mostly identical gene clustering. 
+The reference genom and the genom from Bin09 are pretty simular, with mostly identical gene clustering, especially in the SCG region. 
 
 
 1. Go to Layers and remove Num gene clusters, Singeltons, Genes per kbp and Total length from view. Add ANI_percentage_identity to the view and play with the threshold.
 
 ## `Questions`: 
 ### What ranges are used determine a prokaryotic species? 
+Prokaryotic species cut off 95%. 
 
+So Bin9 and refence seem to be one species. The other four differ from the reference, but share a species with each other
+Differences within the clustered bins appear at 99%
+Higher percentage=higher approximate relatedness. 95% cutoff for the same species in prokaryotes.
 ### How high can you go until you see changes in ANI?
 
-### What does the ANI clustering tell you about genome relatedness?
+Changes in AI appear at 99%.
+With 99.5% cutoff, Bin01 is not related to the other Bins.
+99.6% cutoff = Bin13 related to 3 and 8, Bin8 and 3 loosely related
+99.7% cutoff= only relatedness between Bin9 and the reference
 
+### What does the ANI clustering tell you about genome relatedness?
+A higher percentage indicates a higher approximate relatedness. 
 
 ## TASKS: Functional Profiling
 
@@ -416,6 +427,8 @@ Using the Search Function, highlight all genes in the KEGG Module for Methanogen
 
 ## `Question`: 
 ### How are Methanogenesis genes distributed across the genome?
+They are distributed across the entire genome, no clusters recognizable.
+
 
 1. Google COG Categories and select one you are interesed in. Create a new bin, find your Category in the Pangenome and add it to this selection.
 
@@ -439,6 +452,10 @@ This gene will be highly conserved, but has diversified in its AA make-up.
 
 ## `Question`: 
 ### What observations can you make regarding the geometric homogeneity between all genomes and the functional homogeneity?
+20 Genes match among the bins and are located in the marked SCGs region. 
+The AA structure differs though the genes. 
+The most similarities in the AA make-up can be found between the reference and Bin09, with simililar SNPs and deletions/insertions. 
+
 
  ![Image](Pictures/Screenshot%202023-01-30%20at%2015-20-40%20GC_00000248%20detailed.png)
 
@@ -454,4 +471,5 @@ Reconstruct its pathways and check out what it can do.
 ## `Question`: Can the organism do methanogenesis? Does it have genes similar to a bacterial secretion system?
 
 
-Yes the organism can do methanogenesis. 
+Yes, the organism can do methanogenesis. 
+7 similar genes were found, which are used in the bacterial secretion system. 
