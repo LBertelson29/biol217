@@ -180,7 +180,8 @@ anvi-script-gen-genomes-file --input-dir ../02_contigs-dbs -o external-genomes.t
 Now look into your file to verify whether it looks accurate.
 
 `Tip` use cat or head
- - cat: First 10 lines
+ - cat everything
+ - head: First 10 lines
  - tail: last 10 lines
 
 ## `Output`
