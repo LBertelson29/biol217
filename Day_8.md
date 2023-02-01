@@ -70,3 +70,11 @@ conda deactivate
 jobinfo
 ```
 
+# GBI - Integrated Genome Browser
+
+### There you can visualize:
+- bam files
+- fasta-files
+- gff
+- wig
+
