@@ -175,8 +175,10 @@ plot1 + ggsave("plot1.tiff", height = 6, width = 8, units = "in", dpi = 300. com
 How to reshape the Data?
 
 from long to wide 
+```
+tidyr::gather(df1, key= 'class values', value = 'numeric values')
+```
 
-tidyr::spread(iris, Species, 4)
 
 
 # Normal-distribution 
@@ -201,15 +203,15 @@ tree5<-ggplot(data = trees, mapping = aes(Girth, Height)) + geom_line()
 
 ```
 
-![Image](Pictures/trees1.png)
+![Image](Pictures/R/trees1.png)
 
-![Image](Pictures/trees2.png)
+![Image](Pictures/R/trees2.png)
 
-![Image](Pictures/tree3.png)
+![Image](Pictures/R/tree3.png)
 
-![Image](Pictures/tree4.png)
+![Image](Pictures/R/tree4.png)
 
-![Image](Pictures/tree5.png)
+![Image](Pictures/R/tree5.png)
 
 # Set the repo
 ```
@@ -227,4 +229,59 @@ In Environment `Import Dataset`
 ![Image](Pictures/chart_choose.png)
 
 
+
+# Plotting a heatmap 
+
+## Heatmap with name of the gene, sequence type and log2fold
+
+```
+library(readxl)
+df <- read_excel("csrA-WT_sorted.xlsx", sheet = "Sheet6")
+View(df)
+
+library(ggplot2)
+
+ggplot(df, aes(df$Name, df$seq_type, fill=df$log2fold_change)) + geom_tile()
+
+ggplot(df, aes(df$seq_type, df$Name,fill=df$log2fold_change)) + geom_tile()
+```
+![Image](Pictures/Heatmap1.png)
+
+## change color (+ black outline)
+```
+ggplot(df, aes(df$seq_type, df$Name,fill=df$log2fold_change)) + geom_tile()+ scale_fill_gradient(low = "white", high = "red")+theme_linedraw() 
+```
+![Image](Pictures/Heatmap2.png)
+
+## Changing the x,y and legend-titels 
+
+```
+ggplot(df, aes(df$seq_type, df$Name,fill=df$log2fold_change)) + geom_tile()+
+  scale_fill_gradient(low = "white", high = "red")+theme_linedraw()+
+  labs(x = "Sequence type", y = "Genname")+
+  guides(fill=guide_legend(title="log2fold"))
+```
+
+![Image](Pictures/Heatmap3.png)
+
+# Heatmap 2
+## Heatmap with identifier, sequence type and lod2fold
+
+first, gather the data 
+
+```
+library(tidyr)
+
+df1<-tidyr::gather(df1, key= 'Identifier', value = 'log2FC')
+```
+
+plot the heatmap 
+```
+ggplot(df1, aes(df1$method, df1$Identifier,fill=df1$log2FC)) + geom_tile()+
+  scale_fill_gradient(low = "white", high = "red")+theme_linedraw()+
+labs(x = "Sequence type", y = "Identifier")+
+  guides(fill=guide_legend(title="log2FC"))
+```
+
+![Image](Pictures/Heatmap4.png)
 
