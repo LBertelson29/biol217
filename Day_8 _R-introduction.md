@@ -201,15 +201,15 @@ tree5<-ggplot(data = trees, mapping = aes(Girth, Height)) + geom_line()
 
 ```
 
-![Image](Pictures/R/trees1.png)
+![Image](Pictures/trees1.png)
 
-![Image](Pictures/R/trees2.png)
+![Image](Pictures/trees2.png)
 
-![Image](Pictures/R/tree3.png)
+![Image](Pictures/tree3.png)
 
-![Image](Pictures/R/tree4.png)
+![Image](Pictures/tree4.png)
 
-![Image](Pictures/R/tree5.png)
+![Image](Pictures/tree5.png)
 
 # Set the repo
 ```
