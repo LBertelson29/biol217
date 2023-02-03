@@ -35,9 +35,6 @@ NCBI COG = Clusters of Orthologous Genes (Database)
 
 ## 1. A recap on the batch script and for loops
 
-To create a batch script copy the dummy from here, or one of your older scripts
-
-cp ....sh .
 
 The batch script should contain:
 
@@ -343,6 +340,8 @@ Input files from the pangenome analysis.
                         Anvi'o pan database (default: None)
   -g GENOMES_STORAGE, --genomes-storage GENOMES_STORAGE
                         Anvi'o genomes storage file (default: None)
+
+
 
 
 ### Write the command and use the additional flag -P. 
