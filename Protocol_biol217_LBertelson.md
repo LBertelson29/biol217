@@ -55,8 +55,8 @@ sbatch name.sh
 ```
 The batch script should contain the following information:
 
-|Parameter|	
--------------
+|Parameter|	  |
+|-------------|-------------|
 |#SBATCH |	Slurm batch script directive|
 |--partition= or -p	|Slurm partition (~batch class)|
 |--job-name= or -J	|Job name|
