@@ -447,6 +447,7 @@ srun --reservation=biol217 --pty --mem=10G --nodes=1 --tasks-per-node=1 --cpus-p
 node010
 conda activate /home/sunam225/miniconda3/miniconda4.9.2/usr/etc/profile.d/conda.sh/envs/anvio-7.1
 ```
+```
 anvi-refine -c ../contigs.sb -C consolidated_bins -p ./merged_profiles/PROFILE.db --bin-id Bin_METABAT__25
 ```
 Open new terminal
@@ -507,7 +508,7 @@ Final summary to get comprehensive info about your consolidated bins:
 anvi-summarize -p /PATH/TO/merged_profiles/PROFILE.db -c /PATH/TO/contigs.db -o /PATH/TO/SUMMARY_consolidated_bins -C consolidated_bins
 ```
 
-### Questions 8
+### `Questions 8`
 
 **Did you get a species assignment to the Archaea bins previously identified?**
 
@@ -722,7 +723,7 @@ anvi-gen-genomes-storage -e external-genomes-final.txt -o ./Methano_GENOMES.db
 anvi-pan-genome -g Methano_GENOMES.db --project-name Methano_pangenome --num-threads 10
 ```
 
-# 2.4 Genome similarity based on average nucleotide identity (ANI) 
+## 2.4 Genome similarity based on average nucleotide identity (ANI) 
 
 In anvi'o we will need to generate two artifacts, similar to when working with assemblies. The first is the genomes-storage.db, which corresponds to an individual contigs.db, but merges all individual genomes you are working with into one database. The files themselves will be a bit leaner, than all files together, making it easier to share and publish those.
 
@@ -740,16 +741,7 @@ This will contain:
 2. resolved gene clusters
 3. any post-analysis of gene clusters, downstream analyses and visualisations
 
-We will combine the next two steps in one BATCH script with the following computing requirements:
-
-`change SBATCH Settings`: --nodes=1, --cpus-per-task=10, --mem=500M, --time=00:05:00
-
-Look for the following commands and settings and complete this in your batch script:
- ```
- anvi-gen-genomes-storage -e ? -o ?
-
-anvi-pan-genome -g ? --project-name ? --num-threads 10
-```
+We will combine the next two steps in one Batch script with the following computing requirements:
 
 ```
 #!/bin/bash
@@ -780,9 +772,9 @@ anvi-pan-genome -g Methano_GENOMES.db --project-name Methano_pangenome --num-thr
 
 # 2.4 Genome similarity based on average nucleotide identity (ANI) 
 
-The next step calculates the genome similarity to each other. The most commonly used approach is average nucleotide identity using the MUMmer algorithm to align each genome. The result of this is used as a measure to determine how related the genomes are and whether you have discovered a new species. Usually the cutoff for the species boundary is set at 95-96% identity over a 90% genome coverage.
+The next step calculates the genome similarity to each other. The most commonly used approach is average nucleotide identity using the MUMmer algorithm to align each genome. The result of this is used as a measure to determine how related the genomes are and whether you have discovered a new species. Usually the cutoff for the species boundary is set at **95-96% identity over a 90% genome coverage**.
 
-`
+
 ```
 #!/bin/bash
 
@@ -817,9 +809,9 @@ conda activate /home/sunam225/miniconda3/miniconda4.9.2/usr/etc/profile.d/conda.
 anvi-display-pan -p Methano_pangenome-PAN.db -g ../Methano_GENOMES.db -P 8083
 ```
 
-### `Questions`
+### `Questions 11`
 
-Which INPUT FILES do we need?
+**Which INPUT FILES do we need?**
 
 - Input files from the pangenome analysis.
 
@@ -830,13 +822,13 @@ Which INPUT FILES do we need?
 
 
 
-
-Write the command and use the additional flag -P. 
+**Task**
+**Write the command and use the additional flag -P.**
 ```
 anvi-display-pan -p Methano_pangenome-PAN.db -g ../Methano_GENOMES.db -P 8083
 ```
 
-What is the -P flag for?
+**What is the -P flag for?**
 
 -P INT, --port-number INT
                         Port number to use for anvi'o services. If nothing is
@@ -862,7 +854,7 @@ Open browser: http://127.0.0.1:8060
 
 3. Cluster the genomes based on Frequency
 
-### `Questions 11`
+### `Questions 12`
 **Based on the frequency clustering of genes, do you think all genomes are related? Why?**
 - Based on the SCGs, which are clustered in the same region and only occur once in every genome, all genomes should classify as Archea.
 Bin9 seems to be closer related to Mflavescens. The two share more gene clusters than the other bins, which are more similar to each other that to Bin09 and M.Flavescens. 
@@ -892,7 +884,7 @@ With 99.5% cutoff, Bin01 is not related to the other Bins.
 - Create a new bin called "Methanogenesis" and store your search results in this bin.
 
 
-### `Question 12`: 
+### `Question 13`: 
 **How are Methanogenesis genes distributed across the genome?**
 - They are distributed across the entire genome, no clusters recognizable.
 
@@ -905,19 +897,7 @@ With 99.5% cutoff, Bin01 is not related to the other Bins.
 ![Image](Pictures/Methano_pangenome(1).svg)
 
 
-
-**Task**: Functional/geometric homogeneity and their uses
-
-1. Using search parameters, find a gene which occurs:
-        in all genomes
-        a maximum of 1 times (Single copy gene)
-        has a high variability in its functional homogeneity (max. 0.80)
-
-This gene will be highly conserved, but has diversified in its AA make-up.
-
-2. Highlight the found genes on the interface. Inspect one of the gene-clusters more closely (Inspect gene-cluster).
-
-### `Question 13`: 
+### `Question 14`: 
 **What observations can you make regarding the geometric homogeneity between all genomes and the functional homogeneity?**
 - 20 Genes match among the bins and are located in the marked SCGs region. 
 The AA structure differs though the genes. 
@@ -933,8 +913,8 @@ Outside of anvi'o there are a range of tools available to investigate your organ
 
 **Task**: Check out the BlastKOALA Results for this Methanogen.
 
-Reconstruct its pathways and check out what it can do.
-
-### `Question 14`
+### `Question 15`
 **Can the organism do methanogenesis? Does it have genes similar to a bacterial secretion system?**
 - Yes, the organism can do methanogenesis. 7 similar genes were found, which are used in the bacterial secretion system.
+
+
