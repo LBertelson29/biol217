@@ -25,7 +25,7 @@ For the assembly and analyse of Metagenome Assembled Genomes (MAGs) we will foll
 
 ## Tools used in the course: 
 |Tool |	Version |	Repository|
-----------------------------
+|------|--------|------------|
 |fastqc |	0.11.9 |	FastQC|
 |fastp|	0.22.0	|fastp|
 |megahit	|1.2.9|	megahit|
