@@ -917,4 +917,504 @@ Outside of anvi'o there are a range of tools available to investigate your organ
 **Can the organism do methanogenesis? Does it have genes similar to a bacterial secretion system?**
 - Yes, the organism can do methanogenesis. 7 similar genes were found, which are used in the bacterial secretion system.
 
+# 3. RNA-Seq analysis (Transcriptomics)
+
+The aim: 
+
+- Setting up RNA-Seq data analysis pipeline
+- RNA-Seq data pre-processing
+- RNA-Seq Data Analysis
+- Differential Gene Expression
+- Data Visualization
+- Functional enrichment Analysis
+
+**Tools** 	 	
+
+- READemption 2.0.3 	
+- DESeq2 4.2 	
+- edgeR 3.32 	
+- limma 3.46 
+- R 4.1.0 	
+- RStudio 1.4.1717 
+- Kallisto 0.48.0 
+
+**Dataset**
+The dataset you will use today comes from a publication by Prasse et al. 2017.
+https://www.tandfonline.com/doi/full/10.1080/15476286.2017.1306170
+
+## 3.1 Downloading the data to be used for RNA_seq Analysis:
+
+To download the data used in the paper the SRR number was used:
+```
+conda activate /home/sunam226/.conda/envs/grabseq
+grabseqs -t 4 -m ./metadata.csv SRR4018514 SRR4018515 SRR4018516 SRR4018517
+```
+Download the entire project:
+```
+conda activate /home/sunam226/.conda/envs/grabseq
+grabseqs -t 4 -m SRP081251
+```
+
+Or download the data manually (fasta and fastq-files, filtered or clipped).
+
+### `Question 15`
+**How to find the SRR number from a paper?**
+Search in the paper directly for SRR, NCBI or Accession with ctrl+f
+Open the link
+Look for a SRA or project numer
+Click on each samples and look for SRR-Number 
+
+
+## 3.2  Quality control (fastqc & fastp)
+
+1. Run fastqc
+```
+module load fastqc
+fastqc -t 4 -o fastqc_output *.fastq.gz
+```
+2. A fastqc output folder was created
+3. Run fastp
+4. Multiqc was used to see a summary of all files at once
+```
+mkdir ../qc_reports
+for i in *.fastq.gz; do fastqc -t 4 -o ../qc_reports/fastqc_output $i; done
+for i in *.fastq.gz; do fastp -i $i -o ${i}_cleaned.fastq.gz -h
+../qc_reports/${i}_fastp.html -j ${i}_fastp.json -w 4 -q 20 -z 4; done
+cd ..
+multiqc -d . -o ./qc_reports/multiqc_output 
+```
+
+## 3.3 READemption
+
+- **READemption** = A pipeline for the computational evaluation of RNA-Seq data
+- Pipeline in the CAUCLUSTER IDs
+
+The READemption pipeline is divided into 5 steps:
+
+**1. Creating a project folder and the required subfolders**
+```
+conda activate /home/sunam226/.conda/envs/reademption
+reademption create --project_path READemption_analysis --species
+salmonella="Salmonella Typhimurium"
+```
+
+**This will create 2 Folders in READemption_analysis**
+- Input and Output
+
+**2. Prepare the reference sequences and annotations**
+
+Save `Ftp source for easier access:
+
+FTP_SOURCE=ftp://ftp.ncbi.nih.gov/genomes/archive/old_refseq/Bacteria/Salmonella_enterica_serovar_Typhimurium_SL1344_uid86645/
+
+2.2 Download the .fasta files for genome:
+
+```
+wget -O READemption_analysis/input/salmonella_reference_sequences/NC_016810.fa $FTP_SOURCE/NC_016810.fna
+wget -O READemption_analysis/input/salmonella_reference_sequences/NC_017718.fa $FTP_SOURCE/NC_017718.fna
+wget -O READemption_analysis/input/salmonella_reference_sequences/NC_017719.fa $FTP_SOURCE/NC_017719.fna
+wget -O READemption_analysis/input/salmonella_reference_sequences/NC_017720.fa $FTP_SOURCE/NC_017720.fna
+```
+
+2.3 Download the genome annotation file (.gff3) and unzip it
+```
+wget -P READemption_analysis/input/salmonella_annotations https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/210/855/GCF_000210855.2_ASM21085v2/GCF_000210855.2_ASM21085v2_genomic.gff.gz
+
+gunzip READemption_analysis/input/salmonella_annotations/GCF_000210855.2_ASM21085v2_genomic.gff.gz
+```
+
+2.4 Change the headers 
+
+Change the headers of the fasta files to the header of annotation file (annotation file + reference file
+need to look the same: Sequence ID first):
+
+By hand: Remove everything infront of the NZ-number in sublime text editor, than safe.
+
+Via command:
+```
+sed -i "s/>/>NC_016810.1 /"
+READemption_analysis/input/salmonella_reference_sequences/NC_016810.fa
+sed -i "s/>/>NC_017718.1 /"
+READemption_analysis/input/salmonella_reference_sequences/NC_017718.fa
+sed -i "s/>/>NC_017719.1 /"
+READemption_analysis/input/salmonella_reference_sequences/NC_017719.fa
+sed -i "s/>/>NC_017720.1 /"
+READemption_analysis/input/salmonella_reference_sequences/NC_017720.fa
+```
+
+2.5 Downloading the raw reads
+
+```
+wget -P READemption_analysis/input/reads http://reademptiondata.imib-zinf.net/InSPI2_R1.fa.bz2
+wget -P READemption_analysis/input/reads http://reademptiondata.imib-zinf.net/InSPI2_R2.fa.bz2
+wget -P READemption_analysis/input/reads http://reademptiondata.imib-zinf.net/LSP_R1.fa.bz2
+wget -P READemption_analysis/input/reads http://reademptiondata.imib-zinf.net/LSP_R2.fa.bz2
+```
+
+## 3.4 Run READemption pipeline
+
+```
+#!/bin/bash
+#SBATCH --job-name=reademption
+#SBATCH --output=reademption.out
+#SBATCH --error=reademption.err
+#SBATCH --nodes=1
+#SBATCH --tasks-per-node=1
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=32G
+#SBATCH --qos=long
+#SBATCH --time=0-05:00:00
+#SBATCH --partition=all
+#SBATCH --export=NONE
+#SBATCH --reservation=biol217
+
+
+#activating conda
+module load miniconda3/4.7.12.1
+source activate /home/sunam226/.conda/envs/reademption
+reademption align -p 4 --poly_a_clipping --project_path READemption_analysis
+reademption coverage -p 4 --project_path READemption_analysis
+reademption gene_quanti -p 4 --features CDS,tRNA,rRNA --project_path READemption_analysis
+reademption deseq -l InSPI2_R1.fa.bz2,InSPI2_R2.fa.bz2,LSP_R1.fa.bz2,LSP_R2.fa.bz2 -c InSPI2,InSPI2,LSP,LSP -r 1,2,1,2 --libs_by_species salmonella=InSPI2_R1,InSPI2_R2,LSP_R1,LSP_R2 --project_path READemption_analysis
+reademption viz_align --project_path READemption_analysis
+reademption viz_gene_quanti --project_path READemption_analysis
+reademption viz_deseq --project_path READemption_analysis
+conda deactivate
+jobinfo
+```
+## 3.5 IGB
+### 3.5.1 Working with the Integrated Genome Browser (IGB)
+There you can visualize:
+bam files
+fasta-files
+gff
+wig 
+
+Load for sequence: fasta-file
+Load for annotation: gff-file
+Load for coverage : bw-files
+
+**Bacterial Ribo-seq data analysis by the HRIBO pipeline**
+![Image](Pictures/Bacterial%20Ribo-seq%20data%20analysis%20by%20the%20HRIBO%20pipeline.%20(A)%20In.png)
+
+
+### 3.5.2 Searching genes in IGB
+**Task**: Find the ORF rncoding csrA and some of it features
+
+Location of the gene csrA : NC_016856.1:2,991,176-2,991,380
+
+![Image](Pictures/IGB_csrA.png)
+
+
+The locus tag for the gene encoding CsrS : STM14_3412
+
+1. Start codon (canonical ATG or alternative GTG,TTG) : ATG
+2. Its stop codon (TAG,TGA,TAA) : TAA
+3. Its length in amino acids: 61 (-stop codon) 
+4. Its SD (consensus AGGAGG at -7 to -4): AGGAG at -7
+5. The name of the upstream(before) gene: STM14_3413/alaS
+6. Do you think csrA is translated? Why?: Yes, as the coverage of the Ribo-seq covers the whole gene (the coverage fits the gene). UTRs clearly visible.
+
+With the riborex-file you can see if the gene is translated or not and more information. 
+
+**Task**: Find a significantly differential expressed gene betweeen wt and scrA-mutant 
+
+## `Gene gltK`
+
+![Image](Pictures/Gene_gltK.png)
+
+
+## 4. R - Introduction
+
+# R-introduction
+
+1. Start with basic codes
+
+```
+getwd()  #shows the working directory (path)
+
+setwd() #set working directory
+
+dir.create("data") #creates folder with the name data
+
+dir.create("data/raw_data") # creates folder (raw_data) inside a folder (data)
+
+# Learning basic codes ----------- 
+
+# to set a variable 
+
+x <- 2+2  (the same like this x=2+2, but better)
+
+
+# what type is my variable? 
+x>-5
+class(x)
+
+-->"numeric"
+
+x <- "Hello World"
+class (x)
+
+--> "charachter"
+
+x<- TRUE
+class(x)
+
+--> "logical"
+
+x <- 1+2i
+class(x)
+
+--> "colplex"
+
+x <- charToRaw ("Hello World")
+class(x)
+
+-->"raw"
+x <-data.frame(matrix(1:6,nrow = 2, ncol = 3))
+class(x)
+
+--> "data.frame"
+
+
+6=6 # 6 is the variable 6
+
+6==6 #6 is 6
+
+6!=6 # 6 is not 6 
+
+my_obj <-40 
+
+data() # shows data already in R
+
+View(data) # shows the data
+
+class(dataname$variable) # shows what kind of variable this is
+
+class(iris$Species) 
+
+"factor"
+```
+2. Creating plots 
+
+
+```
+plot(iris)
+
+boxplot(data=iris, x=iris$Petal.Length)
+
+
+boxplot(data=iris, iris$Petal.Length~iris$Species)
+
+stripchart()
+
+hist()
+
+qqnorm()
+
+pairs()
+```
+3. Installing packages for better plots (for example ggplot2)
+```
+go to packages --> install --> choose the one you want from CRAN
+```
+or 
+```
+install.packages("ggplot2")
+
+install.packages("tidyverse")
+
+```
+install 2 packages (or more) at once
+```
+install.packages(c("readxl", "plotly"))
+
+```
+
+4. Ggplot 2 
+
+Help function 
+```
+?ggplot # Help function
+```
+
+For plotting, we need: 
+- mapping
+- aesthetics
+- geom
+
+```
+ggplot(data = iris, mapping = aes(x = iris$Species, y = iris$Sepal.Length)) + geom_boxplot()
+```
+or 
+
+```
+ggplot(data = iris, mapping = aes(x = Species, y = Sepal.Length)) + geom_boxplot()
+
+```
+change color
+
+fill = color in aes
+```
+ggplot(data = iris, mapping = aes(x = Species, y = Sepal.Length, fill = Species)) + geom_boxplot()
+```
+or with col = 
+```
+ggplot(data = iris, mapping = aes( Sepal.Length, Petal.Length, col = Species)) + geom_point()
+```
+Change the shape of the datapoints with shape = 
+```
+ggplot(data = iris, mapping = aes( Sepal.Length, Petal.Length, shape = Species)) + geom_point()
+```
+
+5. Saving a plot 
+First assign a plot name
+```
+plot1 <-ggplot(data = iris, mapping = aes( Sepal.Length, Petal.Length, size = Petal.Length)) + geom_point()
+```
+save it 
+
+as PDF
+```
+plot1 + ggsave("plot1.pdf", height = 6, width = 8, units = "in", dpi = 300)
+```
+or tiff
+```
+plot1 + ggsave("plot1.tiff", height = 6, width = 8, units = "in", dpi = 300)
+
+```
+or png 
+```
+plot1 + ggsave("plot1.png", height = 6, width = 8, units = "in", dpi = 300)
+
+```
+`dpi = dots per inch`
+(like pixels)
+
+compress an image (for mailing etc., only for png or tiff)
+
+```
+plot1 + ggsave("plot1.tiff", height = 6, width = 8, units = "in", dpi = 300. compression = "lzw")
+```
+
+
+### `Question 16`
+
+How to reshape the Data?
+
+from long to wide 
+```
+tidyr::gather(df1, key= 'class values', value = 'numeric values')
+```
+
+
+6. Normal-distribution 
+
+With histogram, only for numeric values
+```
+hist(iris$Sepal.Length)
+```
+7. Converting table into data.frame
+
+trees<-data.frame(tress)
+
+8. Learning plotting with own choosen dataset
+```
+Trees<-data.frame(trees)
+
+tree1<-ggplot(data = trees, mapping = aes(Height, Volume, col = Height)) + geom_boxplot()
+tree2<-ggplot(data = trees, mapping = aes(Girth, Volume)) + geom_point()
+tree3<-ggplot(data = trees, mapping = aes(Volume, Height, size = Girth, col = Girth)) + geom_point()
+tree4<-ggplot(data = trees, mapping = aes(Girth, Volume)) + geom_line()
+tree5<-ggplot(data = trees, mapping = aes(Girth, Height)) + geom_line()
+
+```
+
+![Image](Pictures/R/trees1.png)
+
+![Image](Pictures/R/trees2.png)
+
+![Image](Pictures/R/tree3.png)
+
+![Image](Pictures/R/tree4.png)
+
+![Image](Pictures/R/tree5.png)
+
+8. Set the repo
+```
+setRepositories() # in console
+```
+
+9. Import dataset 
+
+In Environment `Import Dataset`
+
+10. What kind of plot can i use for my data? 
+
+`Google andrew abela chart guide`
+
+![Image](Pictures/chart_choose.png)
+
+
+
+11. Plotting a heatmap 
+
+11.1 Heatmap with name of the gene, sequence type and log2fold
+
+```
+library(readxl)
+df <- read_excel("csrA-WT_sorted.xlsx", sheet = "Sheet6")
+View(df)
+
+library(ggplot2)
+
+ggplot(df, aes(df$Name, df$seq_type, fill=df$log2fold_change)) + geom_tile()
+
+ggplot(df, aes(df$seq_type, df$Name,fill=df$log2fold_change)) + geom_tile()
+```
+![Image](Pictures/Heatmap1.png)
+
+**change color** (+ black outline)
+```
+ggplot(df, aes(df$seq_type, df$Name,fill=df$log2fold_change)) + geom_tile()+ scale_fill_gradient(low = "white", high = "red")+theme_linedraw() 
+```
+![Image](Pictures/Heatmap2.png)
+
+**Changing the x,y and legend-titels** 
+
+```
+ggplot(df, aes(df$seq_type, df$Name,fill=df$log2fold_change)) + geom_tile()+
+  scale_fill_gradient(low = "white", high = "red")+theme_linedraw()+
+  labs(x = "Sequence type", y = "Genname")+
+  guides(fill=guide_legend(title="log2fold"))
+```
+
+![Image](Pictures/Heatmap3.png)
+
+
+11.2 Heatmap with identifier, sequence type and lod2fold
+
+first, gather the data 
+
+```
+library(tidyr)
+
+df1<-tidyr::gather(df1, key= 'Identifier', value = 'log2FC')
+```
+
+plot the heatmap 
+```
+ggplot(df1, aes(df1$method, df1$Identifier,fill=df1$log2FC)) + geom_tile()+
+  scale_fill_gradient(low = "white", high = "red")+theme_linedraw()+
+labs(x = "Sequence type", y = "Identifier")+
+  guides(fill=guide_legend(title="log2FC"))
+```
+
+![Image](Pictures/Heatmap4.png)
+
+
+
+
+
+
 
