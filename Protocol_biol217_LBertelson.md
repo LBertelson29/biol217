@@ -6,6 +6,8 @@ Aim of the course:
 - Skills in the command line interface
 - documentation of bioinformatic analyses
 
+# 1. Metagenome Assembled Genomes (MAGs)
+
 ## Dataset
 We worked with samples taken from a mesophilic agricultural biogas plant near Cologne, Germany. The samples were collected in a monthly interval a month over a period of 587 days and analysed based on 16S amplicon sequences by Martin Fisher et al.. We used three exemplanary samples from this dataset and accomplished and analysed the process from raw reads to MAGs. 
 Link of the dataset:
@@ -98,7 +100,7 @@ example.command
 jobinfo
 ```
 
-# 1.1 Pre-processing the raw reads
+## 1.1 Pre-processing the raw reads
 
 Creating our working directory
 ```
@@ -125,7 +127,7 @@ do
 done
 ```
 
-# 1.2 Assembling the reads into contigs
+## 1.2 Assembling the reads into contigs
 
 The processed (clean) reads were assembled into contigs using **Megahit**
 ```
@@ -151,7 +153,7 @@ The picture shows the de novo created contigs from the processed/clean reads
 - There are no bubbles, branches or unresolved ends in the assembly, but many short contigs
 - The colour is selected based on assumed MAG assignment (bins)
 
-# 1.3  Asses quality of assemblies
+## 1.3  Asses quality of assemblies
 
 The quality assessment of the assemblies from **megahit** was performed with **Quast**. The output is given as PDF and
 html.
@@ -173,7 +175,7 @@ metaquast -t 6 -o ../3_metaquast/ -m 1000 final.contigs.fa
 **What is the total length of the contigs?**
   - 145675865
 
-# 1.4  Bin contigs into MAGs
+## 1.4  Bin contigs into MAGs
 
 Binning of the contigs:
 ```
@@ -398,7 +400,7 @@ cp ./summary/bin_by_bin/Bin_Bin_1_sub/*.fa ./ARCHAEA_BIN_REFINEMENT/
 cp ./summary/bin_by_bin/Bin_METABAT__25/*.fa ./ARCHAEA_BIN_REFINEMENT/
 
 ```
-# 1.6  Asses completeness, contamination, and strain heterogeneity of your MAGs
+## 1.5 Asses completeness, contamination, and strain heterogeneity of your MAGs
 ## GUNC
 Use GUNC to check run chimera detection (Chimeric genomes are genomes wrongly assembled out of two or more genomes coming from separate organisms).
 
